@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Bomber (Web Version) - Colorful Animation</title>
+    <!-- Google Fonts - Poppins (for a modern and clean font) -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* CSS Code */
+        :root {
+            --primary-color: #6a0572; /* Purple */
+            --secondary-color: #ab1f6c; /* Pink/Purple */
+            --accent-color: #ff6f61; /* Orange */
+            --text-color: #333;
+            --background-gradient-start: #fcebeb; /* Light Pink */
+            --background-gradient-end: #ebf5ee; /* Light Green */
+            --error-color: #e74c3c; /* Dark Red */
+            --output-bg: #f8f9fa; /* Light Gray */
+            --border-color: #ddd;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--background-gradient-start), var(--background-gradient-end));
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+            color: var(--text-color);
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 650px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(5px); /* Light blur effect */
+            -webkit-backdrop-filter: blur(5px); /* For Safari */
+            position: relative; /* For animations */
+            overflow: hidden; /* Prevent content from spilling */
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            left: -50px;
+            width: 150px;
+            height: 150px;
+            background: radial-gradient(circle, var(--accent-color) 0%, transparent 70%);
+            animation: bubble1 15s infinite ease-in-out;
+            opacity: 0.3;
+        }
+
+        .container::after {
+            content: '';
+            position: absolute;
+            bottom: -50px;
+            right: -50px;
+            width: 180px;
+            height: 180px;
+            background: radial-gradient(circle, var(--primary-color) 0%, transparent 70%);
+            animation: bubble2 18s infinite ease-in-out reverse;
+            opacity: 0.25;
+        }
+
+        @keyframes bubble1 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(50px, -30px) scale(1.1); }
+            50% { transform: translate(100px, 50px) scale(0.9); }
+            75% { transform: translate(30px, 80px) scale(1.2); }
+        }
+
+        @keyframes bubble2 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(-40px, 60px) scale(0.9); }
+            50% { transform: translate(-90px, -20px) scale(1.1); }
+            75% { transform: translate(-20px, -70px) scale(1.2); }
+        }
+
+
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 30px;
+            font-weight: 700;
+            font-size: 2.2em;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.05);
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--secondary-color);
+            font-size: 1.1em;
+        }
+
+        input[type="text"],
+        input[type="number"] {
+            width: calc(100% - 24px); /* Adjustment for padding */
+            padding: 12px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1em;
+            box-sizing: border-box;
+            transition: all 0.3s ease-in-out;
+            color: var(--text-color);
+            background-color: #fcfcfc;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(106, 5, 114, 0.15); /* Matches primary color */
+            outline: none;
+            background-color: #fff;
+        }
+
+        button {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 14px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+            background: linear-gradient(45deg, var(--secondary-color), var(--primary-color));
+        }
+
+        button:active {
+            transform: translateY(1px);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+        }
+
+        .error-message {
+            color: var(--error-color);
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 1em;
+            opacity: 0; /* Initially hidden */
+            transform: translateY(-10px);
+            transition: all 0.4s ease-out;
+        }
+
+        .error-message.show {
+            opacity: 1; /* Visible */
+            transform: translateY(0);
+        }
+
+        /* Shake animation for error message */
+        .error-message.shake {
+            animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+            transform: translate3d(0, 0, 0);
+            backface-visibility: hidden;
+            perspective: 1000px;
+        }
+
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-1px, 0, 0); }
+            20%, 80% { transform: translate3d(2px, 0, 0); }
+            30%, 70% { transform: translate3d(-4px, 0, 0); }
+            40%, 60% { transform: translate3d(4px, 0, 0); }
+            50% { transform: translate3d(-4px, 0, 0); }
+        }
+
+        .output-section {
+            margin-top: 35px;
+            padding-top: 25px;
+            border-top: 1px dashed var(--border-color); /* Light dashed border */
+            text-align: left;
+            opacity: 0; /* Initially hidden */
+            transform: translateY(20px); /* For sliding up animation */
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+
+        .output-section.show-output {
+            opacity: 1; /* Visible */
+            transform: translateY(0);
+        }
+
+        .output-section h2 {
+            color: var(--primary-color);
+            margin-bottom: 18px;
+            font-size: 1.8em;
+            font-weight: 600;
+        }
+
+        .output-text {
+            background-color: var(--output-bg);
+            border: 1px solid var(--border-color);
+            padding: 20px;
+            border-radius: 10px;
+            white-space: pre-wrap; /* Preserves newlines and spaces */
+            word-wrap: break-word; /* Breaks long words */
+            max-height: 250px; /* Maximum height of the output box */
+            overflow-y: auto; /* Adds scrollbar if content exceeds height */
+            color: var(--text-color);
+            line-height: 1.6;
+            font-size: 0.95em;
+            box-shadow: inset 0 1px 5px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .output-text:empty {
+            /* Styles when the output box is empty */
+            background-color: #e0e0e0;
+            min-height: 50px; /* Minimum height when empty */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #666;
+            font-style: italic;
+        }
+        .output-text:empty::before {
+            content: "Your output will appear here...";
+        }
+
+        /* Scrollbar styling (Webkit browsers like Chrome, Safari) */
+        .output-text::-webkit-scrollbar {
+            width: 8px;
+        }
+        .output-text::-webkit-scrollbar-track {
+            background: var(--output-bg);
+            border-radius: 10px;
+        }
+        .output-text::-webkit-scrollbar-thumb {
+            background: var(--secondary-color);
+            border-radius: 10px;
+            border: 2px solid var(--output-bg);
+        }
+        .output-text::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Text Bomber</h1>
+
+        <div class="input-group">
+            <label for="inputText">Enter something:</label>
+            <input type="text" id="inputText" placeholder="Your text here" value="Hello World">
+        </div>
+
+        <div class="input-group">
+            <label for="numRepetitions">How many times to print?</label>
+            <input type="number" id="numRepetitions" min="0" value="5">
+        </div>
+
+        <button id="generateButton">Print</button>
+
+        <div id="errorMessage" class="error-message"></div>
+
+        <div id="outputSection" class="output-section">
+            <h2>Your Output:</h2>
+            <pre id="outputArea" class="output-text"></pre>
+        </div>
+    </div>
+
+    <script>
+        // JavaScript Code
+        document.addEventListener('DOMContentLoaded', () => {
+            // Reference HTML elements in JavaScript
+            const inputText = document.getElementById('inputText');
+            const numRepetitionsInput = document.getElementById('numRepetitions');
+            const generateButton = document.getElementById('generateButton');
+            const outputArea = document.getElementById('outputArea');
+            const errorMessageDiv = document.getElementById('errorMessage');
+            const outputSection = document.getElementById('outputSection'); // New: Reference to the output section
+
+            // Add click event listener to the button
+            generateButton.addEventListener('click', () => {
+                // Clear previous output and error messages, and remove animation classes
+                outputArea.textContent = '';
+                errorMessageDiv.textContent = '';
+                errorMessageDiv.classList.remove('show', 'shake'); // Remove error message animation classes
+                outputSection.classList.remove('show-output'); // Remove output section animation class
+
+                const userText = inputText.value; // Get text input
+                let numReps = parseInt(numRepetitionsInput.value); // Get number input and convert to integer
+
+                // JavaScript logic equivalent to Python's try-except ValueError
+                if (isNaN(numReps) || numReps < 0) {
+                    errorMessageDiv.textContent = "Invalid input! Please enter an integer for the number of repetitions.";
+                    errorMessageDiv.classList.add('show', 'shake'); // Show error message and add shake animation
+                    outputArea.textContent = "No output printed."; // Output similar to Python's behavior
+                    return; // Stop the function
+                }
+
+                // If the number of repetitions is 0
+                if (numReps === 0) {
+                    outputArea.textContent = "No output printed.";
+                    outputSection.classList.add('show-output'); // Show output section
+                    return;
+                }
+
+                // Generate the output
+                let outputContent = "";
+                for (let i = 0; i < numReps; i++) {
+                    outputContent += userText + "\n"; // Add input text and a newline for each repetition
+                }
+
+                // Display the result in the output area
+                outputArea.textContent = outputContent.trim(); // Use .trim() to remove the last extra newline
+                outputSection.classList.add('show-output'); // Animate and show the output section when results are ready
+            });
+        });
+    </script>
+
+    <!-- START: Ad Network Code -->
+    <!-- This code is provided by the ad network. It will load advertisements on your webpage. -->
+    <script type='text/javascript' src='//vindictivemopenthrone.com/34/ed/a8/34eda8b1b302827f2a372954bd7d212f.js'></script>
+    <script type='text/javascript' src='//vindictivemopenthrone.com/28/a5/d1/28a5d10ebf806b3def2ada584fbe71bf.js'></script>
+
+    <script type="text/javascript">
+        atOptions = {
+            'key' : '4b90001f66105be8ca3e6dc710c5c162',
+            'format' : 'iframe',
+            'height' : 90,
+            'width' : 728,
+            'params' : {}
+        };
+    </script>
+    <script type="text/javascript" src="//vindictivemopenthrone.com/4b90001f66105be8ca3e6dc710c5c162/invoke.js"></script>
+    <!-- END: Ad Network Code -->
+
+</body>
+</html>
